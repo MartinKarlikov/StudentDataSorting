@@ -41,7 +41,7 @@ void countingSort(DynamicArray<StudentData<int>>& toSort, size_t size)
 	for (size_t i = 0; i < size; ++i)
 	{
 
-		int temp = newOne.getAt(i).getSortBy();
+		int temp = static_cast<StudentData<int>>(newOne[i]).getSortBy();
 
 		arr[temp - 1] ++;
 
@@ -72,12 +72,12 @@ void countingSort(DynamicArray<StudentData<int>>& toSort, size_t size)
 
 	for (size_t i = 0; i < size; ++i)
 	{
-		int numTemp = newOne.getAt(i).getSortBy() - 1;
+		int numTemp = static_cast<StudentData<int>>(newOne[i]).getSortBy() - 1;
 
 		if (arr[numTemp] != 0)
 		{
 
-			toSort.setAt(--arr[numTemp], newOne.getAt(i));
+			toSort.setAt(--arr[numTemp], newOne[i]);
 
 		}
 
