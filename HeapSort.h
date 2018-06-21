@@ -6,11 +6,15 @@
 //uses the siftDown technique 
 
 template <typename T>
-void Tswap(StudentData<T>& first, StudentData<T>& second)
+void ArrSwap(DynamicArray<StudentData<T>>& array, size_t firstIndex, size_t secondIndex)
 {
-	StudentData<T> temp = first;
-	first = second;
-	second = temp;
+
+	StudentData<T> temp = array[firstIndex];
+
+	array[firstIndex] = array[secondIndex];
+
+	array[secondIndex] = temp;
+
 }
 
 size_t findParent(size_t index);
@@ -35,11 +39,16 @@ inline void heapsort(DynamicArray<StudentData<T>>& toSort, size_t size)
 	heapify(toSort, size);
 
 	size_t end = size - 1;
+
 	while (end > 0)
 	{
-		Tswap(toSort.getAt(end), toSort.getAt(0));
+
+		ArrSwap(toSort, end, 0);
+
 		end--;
+
 		siftDown(toSort, 0, end);
+
 	}
 }
 
@@ -47,10 +56,14 @@ template<typename T>
 inline void heapify(DynamicArray<StudentData<T>>& toheapify, size_t size)
 {
 	int start = findParent(size - 1);
+
 	while (start >= 0)
 	{
+
 		siftDown(toheapify, start, size - 1);
+
 		start--;
+
 	}
 }
 
@@ -59,27 +72,36 @@ inline void siftDown(DynamicArray<StudentData<T>>& toFix, size_t start, size_t e
 {
 	size_t root = start;
 	size_t swap, child;
+
 	while (findLeftChild(root) <= end)
 	{
+
 		child = findLeftChild(root);
+
 		swap = root;
 
-		if (toFix.getAt(swap) < toFix.getAt(child))
+		if (toFix[swap] < toFix[child])
 		{
 			swap = child;
 		}
-		if (child + 1 <= end && toFix.getAt(swap) < toFix.getAt(child + 1))
+
+		if (child + 1 <= end && toFix[swap] < toFix[child + 1])
 		{
 			swap = child + 1;
 		}
+
 		if (swap == root)
 		{
 			return;
 		}
+
 		else
 		{
-			Tswap(toFix.getAt(root), toFix.getAt(swap));
+
+			ArrSwap(toFix, root, swap);
+
 			root = swap;
+
 		}
 	}
 }
