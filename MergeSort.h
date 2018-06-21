@@ -17,9 +17,9 @@ inline void mergeSort(DynamicArray<StudentData<T>>& toSort, size_t size)
 {
 	DynamicArray<StudentData<T>> second = toSort;
 
-	for (int step = 1; step < size; step *= 2)
+	for (size_t step = 1; step < size; step *= 2)
 	{
-		for (int i = 0; i < size; i = i + 2 * step)
+		for (size_t i = 0; i < size; i = i + 2 * step)
 		{
 			merge(toSort, second, i, min(i + step, size), min(i + 2 * step, size));
 		}
@@ -36,15 +36,19 @@ inline void merge(DynamicArray<StudentData<T>>& first, DynamicArray<StudentData<
 	{
 		if (leftBoundry < right 
 			&& 
-			(rightBoundry >= end || first.getAt(leftBoundry) <= first.getAt(rightBoundry)))
+			(rightBoundry >= end || first[leftBoundry] <= first[rightBoundry]))
 		{
-			second.setAt(i, first.getAt(leftBoundry));
+
+			second[i] = first[leftBoundry];
+
 			leftBoundry++;
 
 		}
 		else
 		{
-			second.setAt(i, first.getAt(rightBoundry));
+			
+			second[i] = first[rightBoundry];
+
 			rightBoundry++;
 
 		}
