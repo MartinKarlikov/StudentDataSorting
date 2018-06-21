@@ -9,6 +9,10 @@ using namespace std;
 //Standard array that resizes itself 
 //Made template for a more wide use
 
+
+template<typename T>
+class DynamicProxy;
+
 template <typename T>
 class DynamicArray
 {
@@ -44,6 +48,10 @@ public:
 	//reverses the array,i.e. for when the array is sorted in asc order and we want it in desc
 	void reverseArray();
 
+	DynamicProxy<T> operator[](size_t);
+
+	const DynamicProxy<T> operator[](size_t) const;
+
 private:
 
 	void resize();
@@ -55,6 +63,37 @@ private:
 	size_t used;
 
 };
+
+
+template<typename T>
+class DynamicProxy
+{
+
+private:
+
+	DynamicArray<T>* arrTemp;
+
+	size_t  arrIndex;
+
+public:
+
+	DynamicProxy(DynamicArray<T>* arr, size_t index);
+
+	DynamicProxy(const DynamicProxy<T>& other);
+
+	DynamicProxy<T>& operator=(const DynamicProxy<T>& other);
+
+	operator T() const;
+
+	DynamicProxy<T>& operator=(T other);
+
+};
+
+template <typename T>
+bool operator<(const DynamicProxy<T>& lhs, const DynamicProxy<T>& rhs);
+
+template <typename T>
+bool operator<=(const DynamicProxy<T>& lhs, const DynamicProxy<T>& rhs);
 
 template<typename T>
 inline DynamicArray<T>::DynamicArray()
@@ -69,7 +108,7 @@ inline DynamicArray<T>::DynamicArray()
 }
 
 template<typename T>
-inline DynamicArray<T>::DynamicArray(const DynamicArray & other)
+inline DynamicArray<T>::DynamicArray(const DynamicArray<T> & other)
 {
 	size = other.size;
 
@@ -100,7 +139,7 @@ inline DynamicArray<T>::~DynamicArray()
 }
 
 template<typename T>
-inline DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray & other)
+inline DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray<T> & other)
 {
 
 	if (this != &other)
@@ -193,8 +232,26 @@ inline void DynamicArray<T>::reverseArray()
 
 	for (size_t i = 0; i < used/2; ++i)
 	{
-		Tswap(items[i], items[used - i-1]);
+
+		swap(items[i], items[used - i - 1]);
+
 	}
+
+}
+
+template<typename T>
+inline DynamicProxy<T> DynamicArray<T>::operator[](size_t index)
+{
+
+	return DynamicProxy<T>(this, index);
+
+}
+
+template<typename T>
+inline const DynamicProxy<T> DynamicArray<T>::operator[](size_t index) const
+{
+
+	return DynamicProxy<T>(const_cast<DynamicArray*>(this), index);
 
 }
 
@@ -217,3 +274,65 @@ inline void DynamicArray<T>::resize()
 
 }
 
+template<typename T>
+inline DynamicProxy<T>::DynamicProxy(DynamicArray<T>* arr, size_t index)
+{
+	arrTemp = arr;
+
+	arrIndex = index;
+
+}
+
+template<typename T>
+inline DynamicProxy<T>::DynamicProxy(const DynamicProxy & other)
+{
+
+	arrTemp = other.arrTemp;
+
+	arrIndex = other.arrIndex;
+
+}
+
+template<typename T>
+inline DynamicProxy<T>& DynamicProxy<T>::operator=(const DynamicProxy & other)
+{
+
+	arrTemp->setAt(arrIndex, T(other));
+
+	return *this;
+
+}
+
+template<typename T>
+inline DynamicProxy<T>::operator T() const
+{
+
+	return arrTemp->getAt(arrIndex);
+
+}
+
+template<typename T>
+inline DynamicProxy<T> & DynamicProxy<T>::operator=(T other)
+{
+	
+	arrTemp->setAt(arrIndex,other);
+
+	return *this;
+
+}
+
+template<typename T>
+inline bool operator<(const DynamicProxy<T>& lhs, const DynamicProxy<T>& rhs)
+{
+
+	return T(lhs)<T(rhs);
+
+}
+
+template<typename T>
+inline bool operator<=(const DynamicProxy<T>& lhs, const DynamicProxy<T>& rhs)
+{
+
+	return T(lhs)<=T(rhs);
+
+}
